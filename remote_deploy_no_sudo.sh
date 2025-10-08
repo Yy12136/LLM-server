@@ -67,8 +67,12 @@ check_system_deps() {
         exit 1
     fi
     
-    python_version=$(python3 --version | cut -d' ' -f2 | cut -d'.' -f1,2)
-    if [[ $(echo "$python_version < 3.8" | bc -l 2>/dev/null || echo "1") -eq 1 ]]; then
+    python_version=$(python3 --version | cut -d' ' -f2)
+    python_major=$(echo $python_version | cut -d'.' -f1)
+    python_minor=$(echo $python_version | cut -d'.' -f2)
+    
+    # 检查Python版本是否 >= 3.8
+    if [[ $python_major -lt 3 ]] || [[ $python_major -eq 3 && $python_minor -lt 8 ]]; then
         log_error "Python版本过低，需要3.8+，当前版本: $python_version"
         exit 1
     fi
